@@ -100,20 +100,20 @@ export function PaymentWorkspace({ order, onComplete }: Props) {
   return (
     <div className="h-full flex flex-col gap-3">
       {/* Top: Order summary + total */}
-      <div className="rounded-2xl p-5 relative overflow-hidden shrink-0"
+      <div className="rounded-2xl px-5 py-4 relative overflow-hidden shrink-0"
            style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}>
-        <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
-        <div className="relative flex items-end justify-between">
-          <div>
+        <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+        <div className="relative flex items-end justify-between gap-4 min-w-0">
+          <div className="min-w-0">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-white/80">К оплате</p>
-            <p className="text-4xl font-bold text-white mt-1">
+            <p className="text-4xl font-bold text-white mt-1 tabular-nums truncate">
               {total.toLocaleString('ru-RU')}
-              <span className="text-lg font-medium text-white/80 ml-2">сум</span>
+              <span className="text-base font-medium text-white/80 ml-2">сум</span>
             </p>
           </div>
-          <div className="text-right">
+          <div className="text-right shrink-0 leading-tight">
             <p className="font-mono text-white/80 text-sm">#{order.id.slice(-6).toUpperCase()}</p>
-            <p className="text-white/90 text-sm font-semibold mt-1">
+            <p className="text-white/90 text-sm font-semibold mt-1 whitespace-nowrap">
               Стол {order.table_number}
               {order.zone ? ` · ${order.zone}` : ''}
             </p>
@@ -164,14 +164,14 @@ export function PaymentWorkspace({ order, onComplete }: Props) {
               key={m.v}
               onClick={() => setMethod(m.v)}
               className={[
-                'h-16 rounded-2xl flex items-center justify-center gap-2 font-bold transition-all',
+                'h-14 rounded-2xl flex flex-col items-center justify-center gap-0.5 font-bold transition-all',
                 method === m.v
                   ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/40'
-                  : 'glass-card text-text-secondary',
+                  : 'glass-card text-text-secondary hover:bg-white/[0.06]',
               ].join(' ')}
             >
-              <span className="text-xl">{m.icon}</span>
-              <span className="text-sm">{m.label}</span>
+              <span className="text-lg leading-none">{m.icon}</span>
+              <span className="text-[12px] leading-none">{m.label}</span>
             </button>
           ))}
         </div>
@@ -208,18 +208,18 @@ export function PaymentWorkspace({ order, onComplete }: Props) {
           </div>
 
           {/* Quick amounts + Exact */}
-          <div className="grid grid-cols-6 gap-2 shrink-0">
+          <div className="grid grid-cols-6 gap-1.5 shrink-0">
             <button
               onClick={handleExact}
-              className="h-12 rounded-xl bg-emerald-500/15 text-emerald-400 font-bold text-sm border border-emerald-500/30 active:scale-95 transition-transform"
+              className="h-11 rounded-xl bg-emerald-500/15 text-emerald-400 font-bold text-[13px] border border-emerald-500/30 active:scale-95 transition-transform whitespace-nowrap"
             >
-              ⏵ Ровно
+              Ровно
             </button>
             {QUICK_AMOUNTS.map(amt => (
               <button
                 key={amt}
                 onClick={() => handleQuickAmount(amt)}
-                className="h-12 rounded-xl glass-card text-text-primary font-semibold text-sm active:scale-95 transition-transform"
+                className="h-11 rounded-xl glass-card text-text-primary font-semibold text-sm active:scale-95 transition-transform hover:bg-white/[0.06]"
               >
                 {amt >= 1_000_000 ? `${amt / 1_000_000}M` : `${amt / 1_000}K`}
               </button>
@@ -233,8 +233,8 @@ export function PaymentWorkspace({ order, onComplete }: Props) {
                 key={key}
                 onClick={() => handleNumpad(key)}
                 className={[
-                  'rounded-xl text-2xl font-bold text-text-primary glass-card active:scale-95 transition-transform',
-                  key === '←' ? 'text-amber-400' : '',
+                  'rounded-2xl text-3xl font-bold glass-card active:scale-95 transition-all hover:bg-white/[0.08]',
+                  key === '←' ? 'text-amber-400' : 'text-text-primary',
                 ].join(' ')}
               >
                 {key}

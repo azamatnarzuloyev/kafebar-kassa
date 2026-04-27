@@ -28,8 +28,6 @@
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    max-width: 720px;
-    margin: 0 auto;
     width: 100%;
   }
 

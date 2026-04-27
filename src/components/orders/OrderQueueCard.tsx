@@ -18,17 +18,17 @@ export function OrderQueueCard({ order, selected, onClick }: Props) {
     <button
       onClick={onClick}
       className={[
-        'w-full text-left rounded-2xl px-3 py-2.5 transition-all',
+        'w-full text-left rounded-2xl p-3 transition-all',
         'flex items-center gap-3',
         selected
           ? 'bg-emerald-500/15 ring-2 ring-emerald-500'
-          : 'glass-card active:scale-[0.99]',
+          : 'glass-card active:scale-[0.99] hover:bg-white/[0.06]',
         isPending && !selected ? 'ring-1 ring-amber-500/40' : '',
       ].join(' ')}
     >
       {/* Table bubble */}
       <div className={[
-        'w-12 h-12 rounded-xl flex items-center justify-center font-bold text-base shrink-0',
+        'w-11 h-11 rounded-xl flex items-center justify-center font-bold text-base shrink-0',
         isPending ? 'bg-amber-500 text-white' :
         order.status === 'accepted' ? 'bg-blue-500/20 text-blue-400' :
         'bg-white/5 text-text-muted',
@@ -38,7 +38,7 @@ export function OrderQueueCard({ order, selected, onClick }: Props) {
 
       {/* Body */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
+        <div className="flex items-baseline gap-2">
           <p className="font-bold text-text-primary text-[14px] truncate">
             Стол {order.table_number}
           </p>
@@ -48,18 +48,18 @@ export function OrderQueueCard({ order, selected, onClick }: Props) {
             </span>
           )}
         </div>
-        <p className="text-[11px] text-text-muted mt-0.5 flex items-center gap-1.5">
+        <p className="text-[11px] text-text-muted mt-0.5 truncate">
           <span className="font-mono">#{order.id.slice(-6).toUpperCase()}</span>
-          <span>·</span>
+          <span className="mx-1">·</span>
           <span>{itemsCount} шт.</span>
-          <span>·</span>
+          <span className="mx-1">·</span>
           <span className={isUrgent ? 'text-amber-400 font-semibold' : ''}>{elapsed}</span>
         </p>
       </div>
 
       {/* Total */}
-      <div className="text-right shrink-0">
-        <p className="font-bold text-text-primary">
+      <div className="text-right shrink-0 leading-tight">
+        <p className="text-[15px] font-bold text-text-primary tabular-nums">
           {(+order.total).toLocaleString('ru-RU')}
         </p>
         <p className="text-[10px] text-text-muted">сум</p>

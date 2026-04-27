@@ -157,7 +157,7 @@ export default function WorkspacePage() {
 
       {/* Top bar: session + actions */}
       <div className="px-3 pt-3 flex items-center gap-3">
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <DailySessionBar
             orders={todayQ.data ?? []}
             branchName={branch.name}
@@ -169,7 +169,7 @@ export default function WorkspacePage() {
           onClick={() => setScannerOpen(true)}
           aria-label="Сканировать QR"
           title="Сканировать QR-код клиента"
-          className="h-[60px] px-4 rounded-2xl bg-emerald-500 text-white font-bold flex items-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-95 transition-transform shrink-0"
+          className="h-[64px] px-5 rounded-2xl bg-emerald-500 text-white font-bold flex items-center gap-2.5 shadow-lg shadow-emerald-500/30 active:scale-95 transition-transform shrink-0 hover:bg-emerald-600"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -177,13 +177,13 @@ export default function WorkspacePage() {
             <rect x="3" y="14" width="7" height="7" rx="1" />
             <path d="M14 14h3v3M21 14v7M14 21h3" />
           </svg>
-          <span className="hidden md:inline">Сканировать QR</span>
+          <span>Сканировать QR</span>
         </button>
 
         <button
           onClick={() => navigate('/settings')}
           aria-label="Настройки"
-          className="h-[60px] w-[60px] rounded-2xl glass-card flex items-center justify-center text-text-muted active:scale-95 transition-transform shrink-0"
+          className="h-[64px] w-[64px] rounded-2xl glass-card flex items-center justify-center text-text-muted active:scale-95 transition-transform shrink-0 hover:bg-white/[0.08]"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="3" />
@@ -193,9 +193,10 @@ export default function WorkspacePage() {
       </div>
 
       {/* Main 3-column workspace */}
-      <div className="flex-1 grid grid-cols-12 gap-3 p-3 min-h-0">
+      <div className="flex-1 grid gap-3 p-3 min-h-0"
+           style={{ gridTemplateColumns: 'minmax(280px, 340px) minmax(0, 1fr) minmax(420px, 480px)' }}>
         {/* LEFT — Orders queue */}
-        <aside className="col-span-4 lg:col-span-3 flex flex-col gap-3 min-h-0">
+        <aside className="flex flex-col gap-3 min-h-0">
           {/* Filter tabs */}
           <div className="flex gap-2">
             <FilterChip label="Все" count={counts.all} active={filter === 'all'} onClick={() => setFilter('all')} />
@@ -250,7 +251,7 @@ export default function WorkspacePage() {
         </aside>
 
         {/* CENTER — Order items */}
-        <section className="col-span-4 lg:col-span-5 glass-card rounded-2xl flex flex-col min-h-0 overflow-hidden">
+        <section className="glass-card rounded-2xl flex flex-col min-h-0 overflow-hidden">
           {selectedOrder ? (
             <OrderItemsList order={selectedOrder} />
           ) : (
@@ -263,7 +264,7 @@ export default function WorkspacePage() {
         </section>
 
         {/* RIGHT — Payment workspace */}
-        <section className="col-span-4 glass-card rounded-2xl p-3 min-h-0 overflow-hidden">
+        <section className="glass-card rounded-2xl p-3 min-h-0 overflow-hidden">
           {selectedOrder ? (
             <PaymentWorkspace
               order={selectedOrder}
