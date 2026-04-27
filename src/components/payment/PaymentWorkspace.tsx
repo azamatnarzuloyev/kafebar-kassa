@@ -5,7 +5,17 @@ import { toast } from '@/components/ui/Toast'
 import { Spinner } from '@/components/ui/Spinner'
 import type { Order } from '@/types/api'
 
-type Method = 'cash' | 'card' | 'wallet'
+type Method = 'cash' | 'card' | 'wallet' | 'payme' | 'click' | 'uzum'
+
+const METHODS: { v: Method; label: string; icon: string; color?: string }[] = [
+  { v: 'cash',   label: 'Наличные', icon: '💵' },
+  { v: 'card',   label: 'Карта',    icon: '💳' },
+  { v: 'wallet', label: 'Кешбэк',   icon: '👛' },
+  { v: 'payme',  label: 'Payme',    icon: 'P', color: '#00C7DA' },
+  { v: 'click',  label: 'Click',    icon: 'C', color: '#1FA8FF' },
+  { v: 'uzum',   label: 'Uzum',     icon: 'U', color: '#7B61FF' },
+]
+
 
 interface Props {
   order: Order
@@ -155,25 +165,37 @@ export function PaymentWorkspace({ order, onComplete }: Props) {
       {/* Methods */}
       {!isPaid && (
         <div className="grid grid-cols-3 gap-2 shrink-0">
-          {([
-            { v: 'cash',   label: 'Наличные', icon: '💵' },
-            { v: 'card',   label: 'Карта',    icon: '💳' },
-            { v: 'wallet', label: 'Кешбэк',   icon: '👛' },
-          ] as { v: Method; label: string; icon: string }[]).map(m => (
-            <button
-              key={m.v}
-              onClick={() => setMethod(m.v)}
-              className={[
-                'h-14 rounded-2xl flex flex-col items-center justify-center gap-0.5 font-bold transition-all',
-                method === m.v
-                  ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/40'
-                  : 'glass-card text-text-secondary hover:bg-white/[0.06]',
-              ].join(' ')}
-            >
-              <span className="text-lg leading-none">{m.icon}</span>
-              <span className="text-[12px] leading-none">{m.label}</span>
-            </button>
-          ))}
+          {METHODS.map(m => {
+            const active = method === m.v
+            const isBrand = !!m.color
+            return (
+              <button
+                key={m.v}
+                onClick={() => setMethod(m.v)}
+                className={[
+                  'h-14 rounded-2xl flex flex-col items-center justify-center gap-0.5 font-bold transition-all',
+                  active
+                    ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/40'
+                    : 'glass-card text-text-secondary hover:bg-white/[0.06]',
+                ].join(' ')}
+              >
+                {isBrand ? (
+                  <span
+                    className={[
+                      'w-6 h-6 rounded-md flex items-center justify-center text-[12px] font-bold leading-none',
+                      active ? 'bg-white/25 text-white' : 'text-white',
+                    ].join(' ')}
+                    style={!active ? { backgroundColor: m.color } : {}}
+                  >
+                    {m.icon}
+                  </span>
+                ) : (
+                  <span className="text-lg leading-none">{m.icon}</span>
+                )}
+                <span className="text-[12px] leading-none">{m.label}</span>
+              </button>
+            )
+          })}
         </div>
       )}
 
@@ -244,20 +266,10 @@ export function PaymentWorkspace({ order, onComplete }: Props) {
         </div>
       )}
 
-      {/* Card / Wallet — simpler */}
+      {/* Electronic methods — simpler */}
       {!isPaid && method !== 'cash' && (
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-7xl mb-4">{method === 'card' ? '💳' : '👛'}</div>
-            <p className="text-lg font-semibold text-text-primary">
-              {method === 'card' ? 'Оплата картой' : 'Оплата с кешбэка'}
-            </p>
-            <p className="text-sm text-text-muted mt-2 max-w-xs">
-              {method === 'card'
-                ? 'Проведите карту через POS-терминал, затем подтвердите оплату.'
-                : 'Сумма будет списана с кешбэк-баланса клиента.'}
-            </p>
-          </div>
+          <ElectronicMethodView method={method} />
         </div>
       )}
 
@@ -293,6 +305,47 @@ export function PaymentWorkspace({ order, onComplete }: Props) {
           Закрыть
         </button>
       )}
+    </div>
+  )
+}
+
+function ElectronicMethodView({ method }: { method: Method }) {
+  const meta = METHODS.find(m => m.v === method)
+  if (!meta) return null
+  const isBrand = !!meta.color
+
+  const description: Record<Method, string> = {
+    cash: '',
+    card:   'Проведите карту через POS-терминал, затем подтвердите оплату.',
+    wallet: 'Сумма будет списана с кешбэк-баланса клиента.',
+    payme:  'Клиент оплачивает через приложение Payme. После подтверждения транзакции — нажмите «Подтвердить оплату».',
+    click:  'Клиент оплачивает через приложение Click. После подтверждения транзакции — нажмите «Подтвердить оплату».',
+    uzum:   'Клиент оплачивает через приложение Uzum Bank. После подтверждения транзакции — нажмите «Подтвердить оплату».',
+  }
+
+  const title: Record<Method, string> = {
+    cash: '',
+    card:   'Оплата картой',
+    wallet: 'Списание с кешбэка',
+    payme:  'Оплата через Payme',
+    click:  'Оплата через Click',
+    uzum:   'Оплата через Uzum',
+  }
+
+  return (
+    <div className="text-center max-w-sm">
+      {isBrand ? (
+        <div
+          className="w-24 h-24 rounded-3xl mx-auto mb-4 flex items-center justify-center text-white text-5xl font-bold shadow-lg"
+          style={{ backgroundColor: meta.color }}
+        >
+          {meta.icon}
+        </div>
+      ) : (
+        <div className="text-7xl mb-4">{meta.icon}</div>
+      )}
+      <p className="text-lg font-bold text-text-primary">{title[method]}</p>
+      <p className="text-sm text-text-muted mt-2 leading-relaxed">{description[method]}</p>
     </div>
   )
 }

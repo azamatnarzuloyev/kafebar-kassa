@@ -46,10 +46,12 @@ export interface ManualOrderInput {
   customer_phone?: string | null
 }
 
+export type PaymentMethod = 'cash' | 'card' | 'wallet' | 'payme' | 'click' | 'uzum'
+
 export interface PaymentInput {
   order_id: string
   amount: number
-  method: 'cash' | 'card' | 'wallet'
+  method: PaymentMethod
   transaction_ref?: string | null
 }
 
